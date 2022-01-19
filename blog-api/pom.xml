@@ -14,26 +14,8 @@
     <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter</artifactId>
-        <!-- 排除 默认使用的logback  -->
-        <exclusions>
-            <exclusion>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-logging</artifactId>
-            </exclusion>
-        </exclusions>
     </dependency>
 
-    <!-- log4j2 -->
-<!--    <dependency>-->
-<!--        <groupId>org.springframework.boot</groupId>-->
-<!--        <artifactId>spring-boot-starter-log4j2</artifactId>-->
-<!--    </dependency>-->
-
-    <dependency>
-        <groupId>ch.qos.logback</groupId>
-        <artifactId>logback-classic</artifactId>
-        <version>1.2.3</version>
-    </dependency>
 
     <dependency>
         <groupId>org.springframework.boot</groupId>

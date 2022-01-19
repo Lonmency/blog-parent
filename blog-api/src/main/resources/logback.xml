@@ -33,11 +33,11 @@
         </encoder>
     </appender>
 
-    <!--全部的日志-->
-    <appender name="allAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${LOG_HOME}/all/all.log</file> <!-- 日志名称 -->
+    <!--error日志-->
+    <appender name="errorAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_HOME}/error/error.log</file> <!-- 日志名称 -->
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>${LOG_HOME}/all/all.%d{yyyy-MM-dd}.%i.log.zip</fileNamePattern>
+            <fileNamePattern>${LOG_HOME}/error/error.%d{yyyy-MM-dd}.%i.log.zip</fileNamePattern>
             <maxFileSize>50MB</maxFileSize>  <!-- 日志文件过大会使的编辑器打开非常慢，因此设置日志最大50MB -->
             <maxHistory>30</maxHistory>  <!-- 保存30天 -->
             <totalSizeCap>10GB</totalSizeCap>  <!-- 总日志大小 -->
@@ -46,6 +46,12 @@
         <encoder>
             <pattern>[%date{yyyy-MM-dd HH:mm:ss}] [%-5level] [%logger:%line] --%mdc{client} %msg%n</pattern>
         </encoder>
+
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
     </appender>
 
     <!-- 每天生成日志文件,文件大小超过50则新生成一个文件，同时将旧文件按${LOG_HOME}/logs/aa.%d{yyyy-MM-dd}.%i.log.zip格式压缩，文件保存30天 -->
@@ -115,6 +121,7 @@
     <root level="INFO">
         <appender-ref ref="STDOUT" />
         <appender-ref ref="allAppender" />
+        <appender-ref ref="errorAppender" />
     </root>
 
 </configuration>
