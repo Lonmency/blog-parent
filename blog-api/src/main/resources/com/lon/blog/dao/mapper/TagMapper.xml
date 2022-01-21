@@ -6,7 +6,8 @@
 
     <!-- List<Tag> findTagsByArticleId(Long articleId);-->
     <select id="findTagsByArticleId" parameterType="long" resultType="com.lon.blog.dao.pojo.Tag">
-        select id,avatar,tag_name as tagName from  ms_tag
+--         select id,avatar,tag_name as tagName from  ms_tag
+        select id,avatar,tag_name from  ms_tag
         where id in
         (select tag_id from ms_article_tag where article_id=#{articleId})
     </select>
@@ -16,7 +17,7 @@
     </select>
     <!-- List<Tag> findTagsByTagIds(List<Long> tagIds);-->
     <select id="findTagsByTagIds" parameterType="list" resultType="com.lon.blog.dao.pojo.Tag">
-        select id,tag_name as tagName from ms_tag
+        select id,tag_name from ms_tag
         where id in
         <foreach collection="tagIds" item="tagId" separator="," open="(" close=")">
             #{tagId}

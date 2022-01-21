@@ -57,9 +57,12 @@ public class LogAspect {
 
 //        //请求的参数
         Object[] args = joinPoint.getArgs();
-        String params = JSON.toJSONString(args[0]);
-        log.info("params:{}",params);
-
+        if(0 == args.length) {
+            log.info("没有请求参数");
+        } else {
+            String params = JSON.toJSONString(args[0]);
+            log.info("params:{}",params);
+        }
         //获取request 设置IP地址
         HttpServletRequest request = HttpContextUtils.getHttpServletRequest();
         log.info("ip:{}", IpUtils.getIpAddr(request));
@@ -84,8 +87,12 @@ public class LogAspect {
 
 //        //请求的参数
         Object[] args = joinPoint.getArgs();
-        String params = JSON.toJSONString(args[0]);
-        log.info("params:{}",params);
+        if(0 == args.length) {
+            log.info("没有请求参数");
+        } else {
+            String params = JSON.toJSONString(args[0]);
+            log.info("params:{}",params);
+        }
 
         //获取request 设置IP地址
         HttpServletRequest request = HttpContextUtils.getHttpServletRequest();
