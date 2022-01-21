@@ -188,6 +188,7 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
 
+    //Article 转 ArticleVo
     private List<ArticleVo> copyList(List<Article> records, boolean isTag, boolean isAuthor) {
         List<ArticleVo> articleVoList = new ArrayList<>();
         for (Article record : records) {

@@ -19,6 +19,7 @@ public class TagsController {
     @GetMapping("hot")
     @LogAnnotation(module="标签",operator="获取最热标签")
     public Result hot(){
+        //        TODO limit配在数据库里
         int limit = 6;
         return tagService.hots(limit);
     }
