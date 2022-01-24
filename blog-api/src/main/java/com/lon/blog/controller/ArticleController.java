@@ -54,7 +54,7 @@ public class ArticleController {
     }
 
     /**
-     * 首页 最新文章
+     * 文章归档（哪天一共有多少篇文章）
      * @return
      */
     @PostMapping("listArchives")

@@ -47,11 +47,18 @@ public class LoginServiceImpl implements LoginService {
         password = DigestUtils.md5Hex(password + slat);
         SysUser sysUser = sysUserService.findUser(account,password);
         if (sysUser == null){
+            //用户名或密码错误
             return Result.fail(ErrorCode.ACCOUNT_PWD_NOT_EXIST.getCode(),ErrorCode.ACCOUNT_PWD_NOT_EXIST.getMsg());
         }
+        //生成token
         String token = JWTUtils.createToken(sysUser.getId());
 
+        //token放入redis中
+        //user转换为json
+        //TODO 存储时间配在数据库里
         redisTemplate.opsForValue().set("TOKEN_"+token, JSON.toJSONString(sysUser),1, TimeUnit.DAYS);
+
+        //将token返回给前端
         return Result.success(token);
     }
 

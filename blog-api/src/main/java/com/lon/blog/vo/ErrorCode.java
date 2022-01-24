@@ -2,7 +2,7 @@ package com.lon.blog.vo;
 
 public enum  ErrorCode {
 
-    PARAMS_ERROR(10001,"参数有误"),
+    PARAMS_ERROR(10001,"用户名或密码输入参数有误"),
     ACCOUNT_PWD_NOT_EXIST(10002,"用户名或密码不存在"),
     TOKEN_ERROR(10003,"token不合法"),
     ACCOUNT_EXIST(10004,"账号已存在"),
