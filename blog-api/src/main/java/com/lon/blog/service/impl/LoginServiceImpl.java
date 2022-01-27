@@ -27,7 +27,8 @@ public class LoginServiceImpl implements LoginService {
     @Autowired
     private RedisTemplate<String,String> redisTemplate;
 
-    private static final String slat = "mszlu!@#";
+    // TODO 配在数据库里
+    private static final String salt = "mszlu!@#";
 
     @Override
     public Result login(LoginParam loginParam) {
@@ -44,7 +45,9 @@ public class LoginServiceImpl implements LoginService {
         if (StringUtils.isBlank(account) || StringUtils.isBlank(password)){
             return Result.fail(ErrorCode.PARAMS_ERROR.getCode(),ErrorCode.PARAMS_ERROR.getMsg());
         }
-        password = DigestUtils.md5Hex(password + slat);
+
+        //对密码进行加密，将加密后的密文与数据库里的密文做比较
+        password = DigestUtils.md5Hex(password + salt);
         SysUser sysUser = sysUserService.findUser(account,password);
         if (sysUser == null){
             //用户名或密码错误
@@ -111,7 +114,7 @@ public class LoginServiceImpl implements LoginService {
         sysUser = new SysUser();
         sysUser.setNickname(nickname);
         sysUser.setAccount(account);
-        sysUser.setPassword(DigestUtils.md5Hex(password+slat));
+        sysUser.setPassword(DigestUtils.md5Hex(password+ salt));
         sysUser.setCreateDate(System.currentTimeMillis());
         sysUser.setLastLogin(System.currentTimeMillis());
         sysUser.setAvatar("/static/img/logo.b3a48c0.png");
