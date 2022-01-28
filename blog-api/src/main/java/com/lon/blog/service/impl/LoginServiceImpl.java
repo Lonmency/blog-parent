@@ -34,7 +34,7 @@ public class LoginServiceImpl implements LoginService {
     public Result login(LoginParam loginParam) {
         /**
          * 1. 检查参数是否合法
-         * 2. 根据用户名和密码去user表中查询 是否存在
+         * 2. 根据用户名和密码(对表单提交的明文密码加密)去user表中查询 是否存在
          * 3. 如果不存在 登录失败
          * 4. 如果存在 ，使用jwt 生成token 返回给前端
          * 5. token放入redis当中，redis  token：user信息 设置过期时间
@@ -42,6 +42,7 @@ public class LoginServiceImpl implements LoginService {
          */
         String account = loginParam.getAccount();
         String password = loginParam.getPassword();
+        // 参数不合法
         if (StringUtils.isBlank(account) || StringUtils.isBlank(password)){
             return Result.fail(ErrorCode.PARAMS_ERROR.getCode(),ErrorCode.PARAMS_ERROR.getMsg());
         }
@@ -56,7 +57,7 @@ public class LoginServiceImpl implements LoginService {
         //生成token
         String token = JWTUtils.createToken(sysUser.getId());
 
-        //token放入redis中
+        //将token存储到redis里，key : "TOKEN_" + token , value : sysUser.toJson
         //user转换为json
         //TODO 存储时间配在数据库里
         redisTemplate.opsForValue().set("TOKEN_"+token, JSON.toJSONString(sysUser),1, TimeUnit.DAYS);
