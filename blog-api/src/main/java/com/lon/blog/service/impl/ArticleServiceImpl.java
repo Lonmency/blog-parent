@@ -19,7 +19,6 @@ import com.lon.blog.vo.params.ArticleParam;
 import com.lon.blog.vo.params.PageParams;
 import com.lon.blog.dao.pojo.Article;
 import com.lon.blog.dao.pojo.ArticleBody;
-import com.lon.blog.service.*;
 import org.joda.time.DateTime;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +40,11 @@ public class ArticleServiceImpl implements ArticleService {
     private SysUserService sysUserService;
     @Autowired
     private ArticleTagMapper articleTagMapper;
+    @Autowired
+    private ArticleBodyMapper articleBodyMapper;
+    @Autowired
+    private CategoryService categoryService;
+
     @Override
     public Result listArticle(PageParams pageParams) {
         Page<Article> page = new Page<>(pageParams.getPage(),pageParams.getPageSize());
@@ -52,7 +56,7 @@ public class ArticleServiceImpl implements ArticleService {
                 pageParams.getYear(),
                 pageParams.getMonth());
         List<Article> records = articleIPage.getRecords();
-        return Result.success(copyList(records,true,true));
+        return Result.success(convertToVoList(records,true,true));
     }
 
 //    @Override
@@ -101,7 +105,7 @@ public class ArticleServiceImpl implements ArticleService {
         //select id,title from article order by view_counts desc limit 5
         List<Article> articles = articleMapper.selectList(queryWrapper);
 
-        return Result.success(copyList(articles,false,false));
+        return Result.success(convertToVoList(articles,false,false));
     }
 
     @Override
@@ -113,7 +117,7 @@ public class ArticleServiceImpl implements ArticleService {
         //select id,title from article order by create_date desc desc limit 5
         List<Article> articles = articleMapper.selectList(queryWrapper);
 
-        return Result.success(copyList(articles,false,false));
+        return Result.success(convertToVoList(articles,false,false));
     }
 
     @Override
@@ -132,7 +136,7 @@ public class ArticleServiceImpl implements ArticleService {
          * 2. 根据bodyId和categoryid 去做关联查询
          */
         Article article = this.articleMapper.selectById(articleId);
-        ArticleVo articleVo = copy(article, true, true,true,true);
+        ArticleVo articleVo = convertToVo(article, true, true,true,true);
         //查看完文章了，新增阅读数，有没有问题呢？
         //查看完文章之后，本应该直接返回数据了，这时候做了一个更新操作，更新时加写锁，阻塞其他的读操作，性能就会比较低
         // 更新 增加了此次接口的 耗时 如果一旦更新出问题，不能影响 查看文章的操作
@@ -187,28 +191,16 @@ public class ArticleServiceImpl implements ArticleService {
         return Result.success(map);
     }
 
-
-    //Article 转 ArticleVo
-    private List<ArticleVo> copyList(List<Article> records, boolean isTag, boolean isAuthor) {
-        List<ArticleVo> articleVoList = new ArrayList<>();
-        for (Article record : records) {
-            articleVoList.add(copy(record,isTag,isAuthor,false,false));
-        }
-        return articleVoList;
-    }
-    private List<ArticleVo> copyList(List<Article> records, boolean isTag, boolean isAuthor, boolean isBody,boolean isCategory) {
-        List<ArticleVo> articleVoList = new ArrayList<>();
-        for (Article record : records) {
-            articleVoList.add(copy(record,isTag,isAuthor,isBody,isCategory));
-        }
-        return articleVoList;
-    }
-
-    @Autowired
-    private CategoryService categoryService;
-
-
-    private ArticleVo copy(Article article, boolean isTag, boolean isAuthor, boolean isBody,boolean isCategory){
+    /**
+     * 转换为ArticleVo
+     * @param article
+     * @param isTag
+     * @param isAuthor
+     * @param isBody
+     * @param isCategory
+     * @return
+     */
+    private ArticleVo convertToVo(Article article, boolean isTag, boolean isAuthor, boolean isBody, boolean isCategory){
         ArticleVo articleVo = new ArticleVo();
         articleVo.setId(String.valueOf(article.getId()));
         BeanUtils.copyProperties(article,articleVo);
@@ -234,9 +226,43 @@ public class ArticleServiceImpl implements ArticleService {
         return articleVo;
     }
 
-    @Autowired
-    private ArticleBodyMapper articleBodyMapper;
+    /**
+     * Article 转 ArticleVo
+     * @param records
+     * @param isTag
+     * @param isAuthor
+     * @return
+     */
+    private List<ArticleVo> convertToVoList(List<Article> records, boolean isTag, boolean isAuthor) {
+        List<ArticleVo> articleVoList = new ArrayList<>();
+        for (Article record : records) {
+            articleVoList.add(convertToVo(record,isTag,isAuthor,false,false));
+        }
+        return articleVoList;
+    }
 
+    /**
+     *
+     * @param records
+     * @param isTag
+     * @param isAuthor
+     * @param isBody
+     * @param isCategory
+     * @return
+     */
+    private List<ArticleVo> convertToVoList(List<Article> records, boolean isTag, boolean isAuthor, boolean isBody, boolean isCategory) {
+        List<ArticleVo> articleVoList = new ArrayList<>();
+        for (Article record : records) {
+            articleVoList.add(convertToVo(record,isTag,isAuthor,isBody,isCategory));
+        }
+        return articleVoList;
+    }
+
+    /**
+     *
+     * @param bodyId
+     * @return
+     */
     private ArticleBodyVo findArticleBodyById(Long bodyId) {
         ArticleBody articleBody = articleBodyMapper.selectById(bodyId);
         ArticleBodyVo articleBodyVo = new ArticleBodyVo();
