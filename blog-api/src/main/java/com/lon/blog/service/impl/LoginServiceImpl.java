@@ -3,6 +3,7 @@ package com.lon.blog.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.lon.blog.dao.pojo.SysUser;
 import com.lon.blog.service.LoginService;
+import com.lon.blog.utils.EncUtil;
 import com.lon.blog.utils.JWTUtils;
 import com.lon.blog.vo.ErrorCode;
 import com.lon.blog.vo.Result;
@@ -27,8 +28,6 @@ public class LoginServiceImpl implements LoginService {
     @Autowired
     private RedisTemplate<String,String> redisTemplate;
 
-    // TODO 配在数据库里
-    private static final String salt = "mszlu!@#";
 
     @Override
     public Result login(LoginParam loginParam) {
@@ -48,7 +47,8 @@ public class LoginServiceImpl implements LoginService {
         }
 
         //对密码进行加密，将加密后的密文与数据库里的密文做比较
-        password = DigestUtils.md5Hex(password + salt);
+//        password = DigestUtils.md5Hex(password + salt);
+        password = EncUtil.encrpty(password);
         SysUser sysUser = sysUserService.findUser(account,password);
         if (sysUser == null){
             //用户名或密码错误
@@ -115,7 +115,7 @@ public class LoginServiceImpl implements LoginService {
         sysUser = new SysUser();
         sysUser.setNickname(nickname);
         sysUser.setAccount(account);
-        sysUser.setPassword(DigestUtils.md5Hex(password+ salt));
+        sysUser.setPassword(EncUtil.encrpty(password));
         sysUser.setCreateDate(System.currentTimeMillis());
         sysUser.setLastLogin(System.currentTimeMillis());
         sysUser.setAvatar("/static/img/logo.b3a48c0.png");
