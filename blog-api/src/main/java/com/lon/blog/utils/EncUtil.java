@@ -2,6 +2,10 @@ package com.lon.blog.utils;
 
 import org.apache.commons.codec.digest.DigestUtils;
 
+/**
+ * 加密
+ * TODO 换成其它加密算法
+ */
 public class EncUtil {
 
     // TODO 配在数据库里

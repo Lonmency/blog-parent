@@ -10,14 +10,9 @@ import com.lon.blog.vo.Result;
 import com.lon.blog.vo.UserVo;
 import com.lon.blog.service.SysUserService;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.PropertyAccessorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.convert.Property;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
-import org.apache.commons.beanutils.PropertyUtils;
-
-import java.lang.reflect.InvocationTargetException;
 
 @Service
 public class SysUserServiceImpl implements SysUserService {
@@ -77,26 +72,11 @@ public class SysUserServiceImpl implements SysUserService {
         if (sysUser == null){
             return Result.fail(ErrorCode.TOKEN_ERROR.getCode(),ErrorCode.TOKEN_ERROR.getMsg());
         }
-        // convert to vo
+
         LoginUserVo loginUserVo = new LoginUserVo();
+        BeanUtils.copyProperties(sysUser,loginUserVo);
+        //id属性pojo和vo类型不一样
         loginUserVo.setId(String.valueOf(sysUser.getId()));
-        loginUserVo.setNickname(sysUser.getNickname());
-        loginUserVo.setAvatar(sysUser.getAvatar());
-        loginUserVo.setAccount(sysUser.getAccount());
-
-        System.out.println("loginUserVo: " + loginUserVo);
-
-//        LoginUserVo loginUserVo2 = new LoginUserVo();
-//        try {
-//            PropertyUtils.copyProperties(loginUserVo2,sysUser);
-//        } catch (IllegalAccessException e) {
-//            e.printStackTrace();
-//        } catch (InvocationTargetException e) {
-//            e.printStackTrace();
-//        } catch (NoSuchMethodException e) {
-//            e.printStackTrace();
-//        }
-//        System.out.println("loginUserVo2" + loginUserVo2);
         return Result.success(loginUserVo);
     }
 

@@ -84,6 +84,9 @@ public class LoginServiceImpl implements LoginService {
         return sysUser;
     }
 
+    /**
+     * 删除对应的token
+     */
     @Override
     public Result logout(String token) {
         redisTemplate.delete("TOKEN_"+token);
