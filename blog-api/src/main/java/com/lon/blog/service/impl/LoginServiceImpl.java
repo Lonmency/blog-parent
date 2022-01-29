@@ -79,6 +79,7 @@ public class LoginServiceImpl implements LoginService {
         if (StringUtils.isBlank(userJson)){
             return null;
         }
+        //json报文转换为pojo对象
         SysUser sysUser = JSON.parseObject(userJson, SysUser.class);
         return sysUser;
     }
