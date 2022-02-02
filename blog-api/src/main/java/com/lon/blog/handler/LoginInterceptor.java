@@ -28,7 +28,9 @@ public class LoginInterceptor implements HandlerInterceptor {
     //在执行controller方法(Handler)之前进行执行
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         /**
-         * 1. 需要判断 请求的接口路径 是否为 HandlerMethod (controller方法)，如果是 HandlerMethod ，不进行拦截，直接放行
+         * 1. 需要判断
+         *      请求的接口路径
+         *      是否为 HandlerMethod (controller方法)，如果是 HandlerMethod ，不进行拦截，直接放行
          * 2. 判断 token是否为空，如果为空 未登录
          * 3. 如果token 不为空，登录验证 loginService checkToken
          * 4. 如果认证成功 放行即可
@@ -38,6 +40,9 @@ public class LoginInterceptor implements HandlerInterceptor {
             //直接放行
             return true;
         }
+
+        //验证token
+        //token在请求头的Authorization字段
         String token = request.getHeader("Authorization");
 
         log.info("=================request start===========================");
@@ -47,7 +52,7 @@ public class LoginInterceptor implements HandlerInterceptor {
         log.info("token:{}", token);
         log.info("=================request end===========================");
 
-
+        //TODO 未登录则自动跳转到登录页面
         if (StringUtils.isBlank(token)){
             Result result = Result.fail(ErrorCode.NO_LOGIN.getCode(), "未登录");
             response.setContentType("application/json;charset=utf-8");

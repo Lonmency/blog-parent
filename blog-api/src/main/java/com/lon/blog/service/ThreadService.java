@@ -9,7 +9,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class ThreadService {
 
-        //期望此操作在线程池 执行 不会影响原有的主线程
+    //期望此操作在线程池 执行 不会影响原有的主线程
+    //异步更新，不影响原有线程
     @Async("taskExecutor")
     public void updateArticleViewCount(ArticleMapper articleMapper, Article article) {
 

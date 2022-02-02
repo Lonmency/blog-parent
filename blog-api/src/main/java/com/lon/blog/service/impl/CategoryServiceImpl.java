@@ -29,7 +29,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Result findAll() {
+    public Result findIdAndName() {
         LambdaQueryWrapper<Category> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.select(Category::getId,Category::getCategoryName);
         List<Category> categories = categoryMapper.selectList(queryWrapper);
@@ -38,7 +38,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Result findAllDetail() {
+    public Result findAll() {
         LambdaQueryWrapper<Category> queryWrapper = new LambdaQueryWrapper<>();
         List<Category> categories = categoryMapper.selectList(queryWrapper);
         //页面交互的对象

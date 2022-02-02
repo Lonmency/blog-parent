@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @Service
+//事务
 @Transactional
 public class LoginServiceImpl implements LoginService {
 
@@ -125,9 +126,11 @@ public class LoginServiceImpl implements LoginService {
         sysUser.setAvatar("/static/img/logo.b3a48c0.png");
         sysUser.setAdmin(1); //1 为true
         sysUser.setDeleted(0); // 0 为false
-        sysUser.setSalt("");
-        sysUser.setStatus("");
-        sysUser.setEmail("");
+        //TODO 这些是否可以注释掉
+//        sysUser.setSalt("");
+//        sysUser.setStatus("");
+//        sysUser.setEmail("");
+
         this.sysUserService.save(sysUser);
 
         String token = JWTUtils.createToken(sysUser.getId());

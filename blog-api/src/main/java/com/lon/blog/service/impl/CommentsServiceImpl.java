@@ -35,7 +35,7 @@ public class CommentsServiceImpl implements CommentsService {
          */
         LambdaQueryWrapper<Comment> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Comment::getArticleId,id);
-        queryWrapper.eq(Comment::getLevel,1);
+//        queryWrapper.eq(Comment::getLevel,1);
         queryWrapper.orderByDesc(Comment::getCreateDate);
         List<Comment> comments = commentMapper.selectList(queryWrapper);
         List<CommentVo> commentVoList = copyList(comments);
@@ -81,14 +81,18 @@ public class CommentsServiceImpl implements CommentsService {
         commentVo.setAuthor(userVo);
         //子评论
         Integer level = comment.getLevel();
+        //第一层
         if (1 == level){
             Long id = comment.getId();
+            //查询pareint_id是id的评论记录
             List<CommentVo> commentVoList = findCommentsByParentId(id);
             commentVo.setChildrens(commentVoList);
         }
         //to User 给谁评论
+        //第二层，是一个子评论，子评论是对文章评论的评论
         if (level > 1){
             Long toUid = comment.getToUid();
+            //查询该评论的目的方的信息（这个评论是对哪个文章评论进行评论）
             UserVo toUserVo = this.sysUserService.findUserVoById(toUid);
             commentVo.setToUser(toUserVo);
         }

@@ -18,12 +18,12 @@ public class CategoryController {
     // /categorys
     @GetMapping
     public Result categories(){
-        return categoryService.findAll();
+        return categoryService.findIdAndName();
     }
 
     @GetMapping("detail")
     public Result categoriesDetail(){
-        return categoryService.findAllDetail();
+        return categoryService.findAll();
     }
 
     ///category/detail/{id}

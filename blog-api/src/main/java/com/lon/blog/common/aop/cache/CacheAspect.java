@@ -76,6 +76,7 @@ public class CacheAspect {
                 return result;
             }
             Object proceed = pjp.proceed();
+            //设置超时时间
             redisTemplate.opsForValue().set(redisKey,JSON.toJSONString(proceed), Duration.ofMillis(expire));
             log.info("存入缓存~~~ {},{}",className,methodName);
             return proceed;
