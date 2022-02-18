@@ -22,7 +22,7 @@
    <appender name="allAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${LOG_HOME}/all/all.log</file> <!-- 日志名称 -->
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>${LOG_HOME}/all/all.%d{yyyy-MM-dd}.%i.log.zip</fileNamePattern>
+            <fileNamePattern>${LOG_HOME}/all/all.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <maxFileSize>50MB</maxFileSize>  <!-- 日志文件过大会使的编辑器打开非常慢，因此设置日志最大50MB -->
             <maxHistory>30</maxHistory>  <!-- 保存30天 -->
             <totalSizeCap>10GB</totalSizeCap>  <!-- 总日志大小 -->
@@ -37,7 +37,7 @@
     <appender name="errorAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${LOG_HOME}/error/error.log</file> <!-- 日志名称 -->
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>${LOG_HOME}/error/error.%d{yyyy-MM-dd}.%i.log.zip</fileNamePattern>
+            <fileNamePattern>${LOG_HOME}/error/error.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <maxFileSize>50MB</maxFileSize>  <!-- 日志文件过大会使的编辑器打开非常慢，因此设置日志最大50MB -->
             <maxHistory>30</maxHistory>  <!-- 保存30天 -->
             <totalSizeCap>10GB</totalSizeCap>  <!-- 总日志大小 -->
@@ -54,12 +54,12 @@
         </filter>
     </appender>
 
-    <!-- 每天生成日志文件,文件大小超过50则新生成一个文件，同时将旧文件按${LOG_HOME}/logs/aa.%d{yyyy-MM-dd}.%i.log.zip格式压缩，文件保存30天 -->
+    <!-- 每天生成日志文件,文件大小超过50则新生成一个文件，同时将旧文件按${LOG_HOME}/logs/aa.%d{yyyy-MM-dd}.%i.log格式压缩，文件保存30天 -->
     <!--common日志-->
     <appender name="commonAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${LOG_HOME}/common/common.log</file> <!-- 日志名称 -->
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>${LOG_HOME}/common/common.%d{yyyy-MM-dd}.%i.log.zip</fileNamePattern>
+            <fileNamePattern>${LOG_HOME}/common/common.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <maxFileSize>50MB</maxFileSize>  <!-- 日志文件过大会使的编辑器打开非常慢，因此设置日志最大50MB -->
             <maxHistory>30</maxHistory>  <!-- 保存30天 -->
             <totalSizeCap>10GB</totalSizeCap>  <!-- 总日志大小 -->
@@ -81,7 +81,7 @@
     <appender name="update" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${LOG_HOME}/update.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>${LOG_HOME}/logs/update.%d{yyyy-MM-dd}.%i.log.zip</fileNamePattern>
+            <fileNamePattern>${LOG_HOME}/logs/update.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <maxFileSize>50KB</maxFileSize>
             <maxHistory>7</maxHistory>
             <totalSizeCap>10GB</totalSizeCap>

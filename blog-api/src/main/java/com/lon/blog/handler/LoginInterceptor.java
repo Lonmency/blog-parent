@@ -67,6 +67,8 @@ public class LoginInterceptor implements HandlerInterceptor {
             response.getWriter().print(JSON.toJSONString(result));
             return false;
         }
+
+        log.info("token:{} 登录成功", token);
         //登录验证成功，放行
         //我希望在controller中 直接获取用户的信息 怎么获取?
         UserThreadLocal.put(sysUser);

@@ -2,6 +2,7 @@ package com.lon.blog.dao.pojo;
 
 import lombok.Data;
 
+// TODO 日期全部改成yyyy-mm-dd形式
 @Data
 public class Comment {
 

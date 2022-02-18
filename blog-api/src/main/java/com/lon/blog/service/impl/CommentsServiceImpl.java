@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
+//TODO 扩展为多级评论
 @Service
 public class CommentsServiceImpl implements CommentsService {
     @Autowired
@@ -28,17 +29,16 @@ public class CommentsServiceImpl implements CommentsService {
     @Override
     public Result commentsByArticleId(Long id) {
         /**
-         * 1. 根据文章id 查询 评论列表 从 comment 表中查询
+         * 1. 根据文章id 查询 评论列表 从 comment 表中查询 ,且查询level是1的记录
          * 2. 根据作者的id 查询作者的信息
-         * 3. 判断 如果 level = 1 要去查询它有没有子评论
-         * 4. 如果有 根据评论id 进行查询 （parent_id）
+         * 3. 如果有 根据评论id 进行查询 （parent_id）
          */
         LambdaQueryWrapper<Comment> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Comment::getArticleId,id);
-//        queryWrapper.eq(Comment::getLevel,1);
+        queryWrapper.eq(Comment::getLevel,1); //这里不可删除
         queryWrapper.orderByDesc(Comment::getCreateDate);
         List<Comment> comments = commentMapper.selectList(queryWrapper);
-        List<CommentVo> commentVoList = copyList(comments);
+        List<CommentVo> commentVoList = convertToVoList(comments);
         return Result.success(commentVoList);
     }
 
@@ -63,15 +63,25 @@ public class CommentsServiceImpl implements CommentsService {
         return Result.success(null);
     }
 
-    private List<CommentVo> copyList(List<Comment> comments) {
+    /**
+     * 转换成Vo LIST
+     * @param comments
+     * @return
+     */
+    private List<CommentVo> convertToVoList(List<Comment> comments) {
         List<CommentVo> commentVoList = new ArrayList<>();
         for (Comment comment : comments) {
-            commentVoList.add(copy(comment));
+            commentVoList.add(convertToVo(comment));
         }
         return commentVoList;
     }
 
-    private CommentVo copy(Comment comment) {
+    /**
+     * 转换成Vo
+     * @param comment
+     * @return
+     */
+    private CommentVo convertToVo(Comment comment) {
         CommentVo commentVo = new CommentVo();
         BeanUtils.copyProperties(comment,commentVo);
         commentVo.setId(String.valueOf(comment.getId()));
@@ -84,14 +94,14 @@ public class CommentsServiceImpl implements CommentsService {
         //第一层
         if (1 == level){
             Long id = comment.getId();
-            //查询pareint_id是id的评论记录
+            //查询pareint_id是id的评论记录，查询到的评论为该评论的子评论
             List<CommentVo> commentVoList = findCommentsByParentId(id);
             commentVo.setChildrens(commentVoList);
         }
         //to User 给谁评论
         //第二层，是一个子评论，子评论是对文章评论的评论
         if (level > 1){
-            Long toUid = comment.getToUid();
+                Long toUid = comment.getToUid();
             //查询该评论的目的方的信息（这个评论是对哪个文章评论进行评论）
             UserVo toUserVo = this.sysUserService.findUserVoById(toUid);
             commentVo.setToUser(toUserVo);
@@ -99,10 +109,15 @@ public class CommentsServiceImpl implements CommentsService {
         return commentVo;
     }
 
+    /**
+     * 查询指定评论的子评论
+     * @param id
+     * @return
+     */
     private List<CommentVo> findCommentsByParentId(Long id) {
         LambdaQueryWrapper<Comment> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Comment::getParentId,id);
         queryWrapper.eq(Comment::getLevel,2);
-        return copyList(commentMapper.selectList(queryWrapper));
+        return convertToVoList(commentMapper.selectList(queryWrapper));
     }
 }
