@@ -24,7 +24,7 @@ public class AdminService {
     }
 
     public List<Permission> findPermissionByAdminId(Long adminId) {
-        //SELECT * FROM `ms_permission` where id in (select permission_id from ms_admin_permission where admin_id=1)
+        //SELECT * FROM `lt_permission` where id in (select permission_id from lt_admin_permission where admin_id=1)
         return adminMapper.findPermissionByAdminId(adminId);
     }
 }

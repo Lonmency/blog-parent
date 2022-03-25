@@ -3434,10 +3434,10 @@
         return this._locale;
     }
 
-    var MS_PER_SECOND = 1000;
-    var MS_PER_MINUTE = 60 * MS_PER_SECOND;
-    var MS_PER_HOUR = 60 * MS_PER_MINUTE;
-    var MS_PER_400_YEARS = (365 * 400 + 97) * 24 * MS_PER_HOUR;
+    var lt_PER_SECOND = 1000;
+    var lt_PER_MINUTE = 60 * lt_PER_SECOND;
+    var lt_PER_HOUR = 60 * lt_PER_MINUTE;
+    var lt_PER_400_YEARS = (365 * 400 + 97) * 24 * lt_PER_HOUR;
 
     // actual modulo - handles negative numbers (for dates before 1970):
     function mod$1(dividend, divisor) {
@@ -3448,7 +3448,7 @@
         // the date constructor remaps years 0-99 to 1900-1999
         if (y < 100 && y >= 0) {
             // preserve leap years using a full 400 year cycle, then reset
-            return new Date(y + 400, m, d) - MS_PER_400_YEARS;
+            return new Date(y + 400, m, d) - lt_PER_400_YEARS;
         } else {
             return new Date(y, m, d).valueOf();
         }
@@ -3458,7 +3458,7 @@
         // Date.UTC remaps years 0-99 to 1900-1999
         if (y < 100 && y >= 0) {
             // preserve leap years using a full 400 year cycle, then reset
-            return Date.UTC(y + 400, m, d) - MS_PER_400_YEARS;
+            return Date.UTC(y + 400, m, d) - lt_PER_400_YEARS;
         } else {
             return Date.UTC(y, m, d);
         }
@@ -3495,15 +3495,15 @@
                 break;
             case 'hour':
                 time = this._d.valueOf();
-                time -= mod$1(time + (this._isUTC ? 0 : this.utcOffset() * MS_PER_MINUTE), MS_PER_HOUR);
+                time -= mod$1(time + (this._isUTC ? 0 : this.utcOffset() * lt_PER_MINUTE), lt_PER_HOUR);
                 break;
             case 'minute':
                 time = this._d.valueOf();
-                time -= mod$1(time, MS_PER_MINUTE);
+                time -= mod$1(time, lt_PER_MINUTE);
                 break;
             case 'second':
                 time = this._d.valueOf();
-                time -= mod$1(time, MS_PER_SECOND);
+                time -= mod$1(time, lt_PER_SECOND);
                 break;
         }
 
@@ -3543,15 +3543,15 @@
                 break;
             case 'hour':
                 time = this._d.valueOf();
-                time += MS_PER_HOUR - mod$1(time + (this._isUTC ? 0 : this.utcOffset() * MS_PER_MINUTE), MS_PER_HOUR) - 1;
+                time += lt_PER_HOUR - mod$1(time + (this._isUTC ? 0 : this.utcOffset() * lt_PER_MINUTE), lt_PER_HOUR) - 1;
                 break;
             case 'minute':
                 time = this._d.valueOf();
-                time += MS_PER_MINUTE - mod$1(time, MS_PER_MINUTE) - 1;
+                time += lt_PER_MINUTE - mod$1(time, lt_PER_MINUTE) - 1;
                 break;
             case 'second':
                 time = this._d.valueOf();
-                time += MS_PER_SECOND - mod$1(time, MS_PER_SECOND) - 1;
+                time += lt_PER_SECOND - mod$1(time, lt_PER_SECOND) - 1;
                 break;
         }
 

@@ -1,5 +1,7 @@
 package com.lon.blog.controller;
 
+import com.lon.blog.dao.pojo.ConfigPojo;
+import com.lon.blog.service.ConfigService;
 import com.lon.blog.vo.Result;
 import com.lon.blog.vo.params.ArticleParam;
 import com.lon.blog.vo.params.PageParams;
@@ -16,6 +18,9 @@ public class ArticleController {
 
     @Autowired
     private ArticleService articleService;
+
+    @Autowired
+    private ConfigService configService;
     /**
      * 首页 文章列表
      * @param pageParams
@@ -38,7 +43,7 @@ public class ArticleController {
 //    @Cache(expire = 5 * 60 * 1000,name = "hot_article")
     public Result hotArticle(){
 //        TODO limit配在数据库里
-        int limit = 5;
+        int limit = Integer.valueOf(configService.findValueByName("hotArticleLimit"));
         return articleService.hotArticle(limit);
     }
 

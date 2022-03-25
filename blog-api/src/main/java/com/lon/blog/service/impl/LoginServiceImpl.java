@@ -44,7 +44,7 @@ public class LoginServiceImpl implements LoginService {
         String password = loginParam.getPassword();
         // 参数不合法
         if (StringUtils.isBlank(account) || StringUtils.isBlank(password)){
-            return Result.fail(ErrorCode.PARAMS_ERROR.getCode(),ErrorCode.PARAMS_ERROR.getMsg());
+            return Result.fail(ErrorCode.PARAlt_ERROR.getCode(),ErrorCode.PARAlt_ERROR.getMsg());
         }
 
         //对密码进行加密，将加密后的密文与数据库里的密文做比较
@@ -111,7 +111,7 @@ public class LoginServiceImpl implements LoginService {
                 || StringUtils.isBlank(password)
                 || StringUtils.isBlank(nickname)
         ){
-            return Result.fail(ErrorCode.PARAMS_ERROR.getCode(),ErrorCode.PARAMS_ERROR.getMsg());
+            return Result.fail(ErrorCode.PARAlt_ERROR.getCode(),ErrorCode.PARAlt_ERROR.getMsg());
         }
         SysUser sysUser =  sysUserService.findUserByAccount(account);
         if (sysUser != null){

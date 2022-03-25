@@ -1,6 +1,6 @@
 (function($){
 $.extend({
-ms_DatePicker: function (options) {
+lt_DatePicker: function (options) {
             var defaults = {
                 YearSelector: "#sel_year",
                 MonthSelector: "#sel_month",
@@ -91,6 +91,6 @@ ms_DatePicker: function (options) {
 			if($DaySelector.attr("rel")!=""){
 				BuildDay();
 			}
-        } // End ms_DatePicker
+        } // End lt_DatePicker
 });
 })(jQuery);
