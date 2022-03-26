@@ -1,5 +1,6 @@
 package com.lon.blog.utils;
 
+import com.lon.blog.service.ConfigService;
 import org.apache.commons.codec.digest.DigestUtils;
 
 /**
@@ -7,9 +8,14 @@ import org.apache.commons.codec.digest.DigestUtils;
  * TODO 换成其它加密算法
  */
 public class EncUtil {
+    //加密盐
+    private static  String salt;
 
-    // TODO 配在数据库里
-    private static final String salt = "lon!@#";
+    private static ConfigService configService = SpringContextUtil.getBean(ConfigService.class);
+
+    static {
+        salt = configService.findValueByName("encSalt");
+    }
 
     public static String encrpty(String data){
         String ciphertext = DigestUtils.md5Hex(data + salt);

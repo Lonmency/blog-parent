@@ -1,6 +1,7 @@
 package com.lon.blog.controller;
 
 import com.lon.blog.common.aop.log.LogAnnotation;
+import com.lon.blog.service.ConfigService;
 import com.lon.blog.service.TagService;
 import com.lon.blog.vo.Result;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,12 +16,14 @@ public class TagsController {
     @Autowired
     private TagService tagService;
 
+    @Autowired
+    private ConfigService configService;
+
     //   /tags/hot
     @GetMapping("hot")
     @LogAnnotation(module="标签",operator="获取最热标签")
     public Result hot(){
-        //        TODO limit配在数据库里
-        int limit = 6;
+        int limit = Integer.valueOf(configService.findValueByName("hotTagLimit"));
         return tagService.hots(limit);
     }
     @GetMapping

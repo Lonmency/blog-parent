@@ -2,6 +2,7 @@ package com.lon.blog.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.lon.blog.dao.pojo.SysUser;
+import com.lon.blog.service.ConfigService;
 import com.lon.blog.service.LoginService;
 import com.lon.blog.utils.EncUtil;
 import com.lon.blog.utils.JWTUtils;
@@ -28,6 +29,8 @@ public class LoginServiceImpl implements LoginService {
     private SysUserService sysUserService;
     @Autowired
     private RedisTemplate<String,String> redisTemplate;
+    @Autowired
+    private ConfigService configService;
 
 
     @Override
@@ -60,7 +63,8 @@ public class LoginServiceImpl implements LoginService {
 
         //将token存储到redis里，key : "TOKEN_" + token , value : sysUser.toJson
         //user转换为json
-        //TODO 存储时间配在数据库里
+        int tokenKeepDay = Integer.valueOf(configService.findValueByName("loginTokenKeepDay"));
+
         redisTemplate.opsForValue().set("TOKEN_"+token, JSON.toJSONString(sysUser),1, TimeUnit.DAYS);
 
         //将token返回给前端

@@ -1,5 +1,6 @@
 package com.lon.blog.utils;
 
+import com.lon.blog.service.ConfigService;
 import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
@@ -13,9 +14,14 @@ import java.util.Map;
 @Slf4j
 public class JWTUtils {
 
-    // TODO 密钥配在数据库里？
     //密钥
-    private static final String jwtTokenKey = "123456Mszlu!@#$$";
+    private static  String jwtTokenKey ;
+
+    private static ConfigService configService = SpringContextUtil.getBean(ConfigService.class);
+
+    static{
+        jwtTokenKey = configService.findValueByName("jwtTokenKey");
+    }
 
     public static String createToken(Long userId){
         Map<String,Object> claims = new HashMap<>();
