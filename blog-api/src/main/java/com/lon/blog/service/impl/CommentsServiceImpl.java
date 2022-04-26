@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.lon.blog.dao.mapper.CommentMapper;
 import com.lon.blog.dao.pojo.Comment;
 import com.lon.blog.dao.pojo.SysUser;
+import com.lon.blog.service.ThreadService;
 import com.lon.blog.utils.UserThreadLocal;
 import com.lon.blog.vo.CommentVo;
 import com.lon.blog.vo.Result;
@@ -25,12 +26,15 @@ import java.util.List;
 @Service
 @Slf4j
 public class CommentsServiceImpl implements CommentsService {
+
     @Autowired
     private CommentMapper commentMapper;
+
     @Autowired
     private SysUserService sysUserService;
+
     @Autowired
-    private RedisTemplate<String, String> redisTemplate;
+    private ThreadService threadService;
 
     @Override
     public Result commentsByArticleId(Long id) {
@@ -73,6 +77,8 @@ public class CommentsServiceImpl implements CommentsService {
         Long toUserId = commentParam.getToUserId();
         comment.setToUid(toUserId == null ? 0 : toUserId);
         this.commentMapper.insert(comment);
+
+        threadService.updateComentCountByRedis(commentParam.getArticleId());
 
         return Result.success(null);
     }
