@@ -19,4 +19,6 @@ public interface ArticleMapper extends BaseMapper<Article> {
                                Long tagId,
                                String year,
                                String month);
+
+    Page<Long> selectId(Page<Long> page);
 }

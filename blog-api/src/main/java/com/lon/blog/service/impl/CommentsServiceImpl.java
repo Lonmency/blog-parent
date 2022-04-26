@@ -11,8 +11,11 @@ import com.lon.blog.vo.UserVo;
 import com.lon.blog.vo.params.CommentParam;
 import com.lon.blog.service.CommentsService;
 import com.lon.blog.service.SysUserService;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -20,11 +23,14 @@ import java.util.List;
 
 //TODO 扩展为多级评论
 @Service
+@Slf4j
 public class CommentsServiceImpl implements CommentsService {
     @Autowired
     private CommentMapper commentMapper;
     @Autowired
     private SysUserService sysUserService;
+    @Autowired
+    private RedisTemplate<String, String> redisTemplate;
 
     @Override
     public Result commentsByArticleId(Long id) {
@@ -42,6 +48,13 @@ public class CommentsServiceImpl implements CommentsService {
         return Result.success(commentVoList);
     }
 
+    /**
+     *
+     * 评论
+     * 评论数放到redis里自增
+     * @param commentParam
+     * @return
+     */
     @Override
     public Result comment(CommentParam commentParam) {
         SysUser sysUser = UserThreadLocal.get();
@@ -60,6 +73,7 @@ public class CommentsServiceImpl implements CommentsService {
         Long toUserId = commentParam.getToUserId();
         comment.setToUid(toUserId == null ? 0 : toUserId);
         this.commentMapper.insert(comment);
+
         return Result.success(null);
     }
 

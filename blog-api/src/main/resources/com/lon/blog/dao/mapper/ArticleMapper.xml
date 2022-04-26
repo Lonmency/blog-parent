@@ -40,5 +40,9 @@
         </where>
         order by weight,create_date desc
     </select>
+    <select id="selectId" resultType="Long">
+        select id
+        from lt_article
+    </select>
 
 </mapper>

@@ -58,6 +58,10 @@ public class LoginInterceptor implements HandlerInterceptor {
             response.setContentType("application/json;charset=utf-8");
             //转换为json
             response.getWriter().print(JSON.toJSONString(result));
+            log.info("request.getContextPath()_new: " + request.getContextPath());
+            //登录页面的网址是 http://localhost:8080/8.js
+//            response.sendRedirect("http://localhost:8080/8.js");
+//            response.sendRedirect(request.getContextPath() + "/tag/5");
             return false;
         }
         SysUser sysUser = loginService.checkToken(token);

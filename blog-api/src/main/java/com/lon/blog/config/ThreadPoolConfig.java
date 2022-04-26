@@ -11,7 +11,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 @Configuration
 @EnableAsync //开启多线程
 public class ThreadPoolConfig {
-
+    //TODO 配置到配置文件里或者数据库里
     @Bean("taskExecutor")
     public Executor asyncServiceExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
