@@ -14,7 +14,7 @@ class LoadRedisDataToMysqlScheduleTest {
 
     @Test
     void loadArticleCount() {
-        loadRedisDataToMysqlSchedule.loadArticleCount();
+//        loadRedisDataToMysqlSchedule.loadArticleCount();
     }
 
     @Test
