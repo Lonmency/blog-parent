@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.lon.blog.dao.mapper.ArticleMapper;
 import com.lon.blog.dao.pojo.Article;
+import com.lon.blog.service.impl.ConfigServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -11,9 +12,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
 
 @Component
 @Slf4j
@@ -31,6 +30,9 @@ public class LoadRedisDataToMysqlSchedule {
     @Autowired
     private RedisTemplate redisTemplate;
 
+    @Autowired
+    private ConfigServiceImpl configService;
+
     @Scheduled(cron = "#{@getCron}")
     public void loadDataToDb(){
         System.out.println("test schedule every 5 seconds");
@@ -43,7 +45,7 @@ public class LoadRedisDataToMysqlSchedule {
     public void loadArticleAndViewCount(){
         Integer size = getSize(zsetKey);
         int pageNum = calcultePageSize(size);
-
+        List<Long> removeZsetList = new ArrayList<>();
         try{
             for (int i = 1; i <= pageNum; i++) {
                 Set<Long> articleIdPage = getIDPage(zsetKey, i, perPageSize);
@@ -62,18 +64,31 @@ public class LoadRedisDataToMysqlSchedule {
                     //TODO 是否可以设置成批量更新
                     LambdaUpdateWrapper<Article> lambdaUpdateWrapper = new LambdaUpdateWrapper<>();
 
-                    lambdaUpdateWrapper.set(Article::getViewCounts,viewCount)
-                                       .set(Article::getCommentCounts,commentCout)
-                                       .eq(Article::getId,id);
+                    if(viewCount !=0 ){
+                        lambdaUpdateWrapper.set(Article::getViewCounts,viewCount).eq(Article::getId,id);
+                        int update = articleMapper.update(null, lambdaUpdateWrapper);
+                    }
+                    if(commentCout !=0 ){
+                        lambdaUpdateWrapper.set(Article::getCommentCounts,commentCout).eq(Article::getId,id);
+                        int update = articleMapper.update(null, lambdaUpdateWrapper);
+                    }
 
-                    int update = articleMapper.update(null, lambdaUpdateWrapper);
-                    log.info("更新的记录数:{}",update);
+                    //更新完后删除对应的zset项和hash项
+
+                    redisTemplate.opsForHash().delete(id.toString(),viewhKey);
+                    redisTemplate.opsForHash().delete(id.toString(),commenthKey);
+                    removeZsetList.add(id);
                 }
+
+            }
+
+            //zset最后统一删除，因为每次好需要读取后续zset分页的值
+            for(Long id:removeZsetList){
+                redisTemplate.opsForZSet().remove(zsetKey,id);
             }
         } catch (Exception e){
             log.error("redis分页查询失败:{}",e.getMessage(),e);
         }
-
     }
 
     public int calcultePageSize(int sumCount){
@@ -148,6 +163,6 @@ public class LoadRedisDataToMysqlSchedule {
 
     @Bean
     public String getCron(){
-        return "* 0/2 * * * *";
+        return configService.findValueByName("loadDataCron");
     }
 }
